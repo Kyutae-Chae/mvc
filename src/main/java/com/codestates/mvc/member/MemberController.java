@@ -2,28 +2,29 @@ package com.codestates.mvc.member;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/v1/members")
+@Validated
 public class MemberController {
 
     @PostMapping
-    public ResponseEntity postMember(@RequestBody MemberPostDto memberPostDto) {
+    public ResponseEntity postMember(@Valid @RequestBody MemberPostDto memberPostDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Client-Geo-Location", "Korea,Seoul"); //test
         return new ResponseEntity<>(memberPostDto, headers, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{member-id}")
-    public ResponseEntity patchMember(@PathVariable("member-id") long memberId,
-                                      @RequestBody MemberPatchDto memberPatchDto) {
+    public ResponseEntity patchMember(@PathVariable("member-id") @Min(1) long memberId,
+                                      @Valid @RequestBody MemberPatchDto memberPatchDto) {
         memberPatchDto.setMemberId(memberId);
         memberPatchDto.setName("홍길동2");
 
