@@ -1,19 +1,20 @@
 package com.codestates.mvc.member;
 
-import org.springframework.http.HttpHeaders;
+//import com.codestates.mvc.member.mapper.MemberMapper;
+import com.codestates.mvc.member.mapstruct.mapper.MemberMapper;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v4/members")
+@RequestMapping("/v5/members")
 @Validated
 public class MemberController {
 

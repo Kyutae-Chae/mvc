@@ -1,48 +1,58 @@
 package com.codestates.mvc.coffee;
 
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/coffees")
+@Validated
 public class CoffeeController {
-
+    // 1. DTO 클래스 및 유효성 검증을 적용하세요.
     @PostMapping
-    public ResponseEntity postCoffee(@RequestBody CoffeePostDto coffeePostDto) {
-        return new ResponseEntity(coffeePostDto, HttpStatus.CREATED);
+    public ResponseEntity postCoffee(@Valid @RequestBody CoffeePostDto coffeePostDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(coffeePostDto, HttpStatus.CREATED);
     }
 
-    @PatchMapping
-    public ResponseEntity patchCoffee(@RequestBody CoffeePatchDto coffeePatchDto) {
-        coffeePatchDto.setEngName("Vanilla Latte");
-        return new ResponseEntity(coffeePatchDto, HttpStatus.OK);
+    // 2. DTO 클래스 및 유효성 검증을 적용하세요.
+    @PatchMapping("/{coffee-id}")
+    public ResponseEntity patchCoffee(@PathVariable("coffee-id") long coffeeId,
+                                      @Valid @RequestBody CoffeePatchDto coffeePatchDto) {
+        if (coffeeId < 0) {
+            return new ResponseEntity<>("PathVariable(\"coffee-id\")는 양수만 가능함", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(coffeePatchDto, HttpStatus.OK);
     }
 
     @GetMapping("/{coffee-id}")
     public ResponseEntity getCoffee(@PathVariable("coffee-id") long coffeeId) {
-        System.out.println("# coffeeId = " + coffeeId);
-        return new ResponseEntity(HttpStatus.OK);
+        System.out.println("# coffeeId: " + coffeeId);
+
+        // not implementation
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getCoffees(HttpEntity httpEntity) {
-        for (Map.Entry<String, List<String>> entry : httpEntity.getHeaders().entrySet()) {
-            System.out.println("key : " + entry.getKey()
-                    + ", " + "value : " + entry.getValue());
-        }
-        System.out.println("host : " + httpEntity.getHeaders().getHost());
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity getCoffees() {
+        System.out.println("# get Coffees");
+
+        // not implementation
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{coffee-id}")
     public ResponseEntity deleteCoffee(@PathVariable("coffee-id") long coffeeId) {
+        // No need business logic
+
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
