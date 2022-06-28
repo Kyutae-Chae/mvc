@@ -5,7 +5,9 @@ import com.codestates.mvc.member.mapstruct.mapper.MemberMapper;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +34,17 @@ public class MemberController {
 
         Member response = memberService.createMember(member);
         return new ResponseEntity<>(mapper.memberToMemberResponseDto(response), HttpStatus.CREATED);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleException(MethodArgumentNotValidException e) {
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+
+        List<ErrorResponse.FieldError> errors = fieldErrors.stream()
+                .map(error -> new ErrorResponse.FieldError(
+                        error.getField(), error.getRejectedValue(), error.getDefaultMessage()
+                )).collect(Collectors.toList());
+        return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
     }
 
     @PatchMapping("/{member-id}")
