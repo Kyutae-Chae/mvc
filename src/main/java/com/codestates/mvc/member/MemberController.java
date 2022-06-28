@@ -36,16 +36,16 @@ public class MemberController {
         return new ResponseEntity<>(mapper.memberToMemberResponseDto(response), HttpStatus.CREATED);
     }
 
-    @ExceptionHandler
-    public ResponseEntity handleException(MethodArgumentNotValidException e) {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-
-        List<ErrorResponse.FieldError> errors = fieldErrors.stream()
-                .map(error -> new ErrorResponse.FieldError(
-                        error.getField(), error.getRejectedValue(), error.getDefaultMessage()
-                )).collect(Collectors.toList());
-        return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity handleException(MethodArgumentNotValidException e) {
+//        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+//
+//        List<ErrorResponse.FieldError> errors = fieldErrors.stream()
+//                .map(error -> new ErrorResponse.FieldError(
+//                        error.getField(), error.getRejectedValue(), error.getDefaultMessage()
+//                )).collect(Collectors.toList());
+//        return new ResponseEntity(errors, HttpStatus.BAD_REQUEST);
+//    }
 
     @PatchMapping("/{member-id}")
     public ResponseEntity patchMember(@PathVariable("member-id") @Positive long memberId,
