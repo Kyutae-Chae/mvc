@@ -17,17 +17,19 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler
     public ResponseEntity handlerMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+//        final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+//
+//        List<ErrorResponse.FieldError> errors = fieldErrors.stream()
+//                .map(error -> new ErrorResponse.FieldError(error.getField(), error.getRejectedValue(), error.getDefaultMessage()))
+//                .collect(Collectors.toList());
+        final ErrorResponse response = ErrorResponse.of(e.getBindingResult());
 
-        List<ErrorResponse.FieldError> errors = fieldErrors.stream()
-                .map(error -> new ErrorResponse.FieldError(error.getField(), error.getRejectedValue(), error.getDefaultMessage()))
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity handlerConstraintViolationException(ConstraintViolationException e) {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        final ErrorResponse response = ErrorResponse.of(e.getConstraintViolations());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
